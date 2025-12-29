@@ -14,8 +14,8 @@ export default defineConfig({
     proxy: {
       // Proxy requests starting with '/api'
       '/api': {
-        // Target is your backend URL
-        target: 'http://127.0.0.1:5000',
+        // Target is your backend URL (matching PORT in .env)
+        target: 'http://127.0.0.1:3000',
         // Important: changes the Host header to match the target
         changeOrigin: true,
         // Optional: If your backend expects the path without '/api', use rewrite

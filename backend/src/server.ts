@@ -47,7 +47,7 @@ console.log('Attempting to connect to MongoDB...');
 connectDB();
 
 const app: Express = express();
-const PORT = 5173; // Hardcoded to prevent environment conflicts
+const PORT = process.env.PORT || 3000; // Read from .env, fallback to 3000
 
 console.log(`Configuring server on port ${PORT}...`);
 
@@ -57,6 +57,18 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// Global Error Handler Middleware
+app.use((err: any, req: Request, res: Response, next: any) => {
+    console.error('Error details:', err);
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Internal Server Error';
+    res.status(statusCode).json({ 
+        error: message,
+        status: statusCode,
+        timestamp: new Date().toISOString()
+    });
+});
 
 app.get('/health', async (req: Request, res: Response) => {
     console.log('Health check requested');
@@ -100,5 +112,7 @@ app.get('/', (req, res) => {
 
 console.log('Starting app.listen...');
 const server = app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`✅ Server is running on port ${PORT}`);
+    console.log(`🔗 Backend running at: http://localhost:${PORT}`);
+    console.log(`📡 API available at: http://localhost:${PORT}/api`);
 });
